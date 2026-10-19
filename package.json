@@ -1,0 +1,24 @@
+{
+  "name": "learnvim",
+  "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=22.22.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "astro": "^7.4.0",
+    "vim-wasm": "^0.0.13"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "typescript": "6",
+    "vite-plugin-static-copy": "^4.1.1"
+  }
+}
