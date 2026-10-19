@@ -1,0 +1,25 @@
+---
+import type { MarkdownHeading } from 'astro';
+
+interface Props {
+	headings: MarkdownHeading[];
+}
+
+// h1 is the page title; list h2/h3 only.
+const items = Astro.props.headings.filter(({ depth }) => depth === 2 || depth === 3);
+---
+
+{
+	items.length > 0 && (
+		<nav aria-label="Contents" class="mb-8 text-xs">
+			<p class="text-muted-foreground">contents:</p>
+			<ul class="list-asterisk mt-1 pl-6">
+				{items.map(({ depth, slug, text }) => (
+					<li style={`margin-inline-start: ${(depth - 2) * 1.25}rem;`}>
+						<a href={`#${slug}`}>{text}</a>
+					</li>
+				))}
+			</ul>
+		</nav>
+	)
+}

@@ -1,0 +1,27 @@
+---
+import type { MarkdownLayoutProps } from 'astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import TableOfContents from '@/components/TableOfContents.astro';
+
+type Props = MarkdownLayoutProps<{ title?: string; description?: string; toc?: boolean }>;
+
+const { frontmatter, headings } = Astro.props;
+---
+
+<BaseLayout title={frontmatter.title} description={frontmatter.description}>
+	<article class="markdown">
+		{frontmatter.toc && <TableOfContents headings={headings} />}
+		<slot />
+	</article>
+</BaseLayout>
+
+<script>
+	// Glossary tooltips: on touch screens a tap toggles the definition (see `.term.open`).
+	document.addEventListener('click', (event) => {
+		const term = (event.target as Element).closest('.term');
+		document.querySelectorAll('.term.open').forEach((open) => {
+			if (open !== term) open.classList.remove('open');
+		});
+		term?.classList.toggle('open');
+	});
+</script>

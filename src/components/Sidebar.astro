@@ -1,0 +1,62 @@
+---
+// Navigation is built from the .md pages in src/pages: top-level pages first,
+// then one group per folder. Order inside a group: `order` frontmatter, then title.
+// Placed by BaseLayout's grid: `aside` is column 1 row 1, `footer` column 1 row 2.
+interface Page {
+	url?: string;
+	frontmatter: { title?: string; order?: number };
+}
+
+const modules = import.meta.glob<Page>('/src/pages/**/*.md', { eager: true });
+
+const groups: Record<string, { href: string; title: string; order: number }[]> = {};
+for (const [path, { url, frontmatter }] of Object.entries(modules)) {
+	const parts = path.replace('/src/pages/', '').split('/');
+	if (parts.join('/') === 'index.md') continue;
+	const group = parts.length > 1 ? (parts[0] ?? '') : '';
+	const href = url ?? path;
+	(groups[group] ??= []).push({
+		href,
+		title: frontmatter.title ?? href,
+		order: frontmatter.order ?? Number.MAX_SAFE_INTEGER,
+	});
+}
+for (const items of Object.values(groups)) {
+	items.sort((a, b) => a.order - b.order || a.title.localeCompare(b.title));
+}
+const sections = Object.entries(groups).sort(([a], [b]) => (a === '' ? -1 : b === '' ? 1 : a.localeCompare(b)));
+
+const pathname = Astro.url.pathname.replace(/\/$/, '') || '/';
+const author = 'luizlisps';
+const authorUrl = 'https://github.com/luizlisps';
+const startYear = 2026;
+const currentYear = new Date().getFullYear();
+const years = currentYear > startYear ? `${startYear}-${currentYear}` : `${startYear}`;
+---
+
+<aside class="py-8 md:sticky md:top-0 md:max-h-screen md:self-start md:overflow-y-auto">
+	<a href="/" data-slot="brand" class="text-primary hover:text-primary-hover">:Learnvim</a>
+	<nav aria-label="Pages" class="mt-8 space-y-6">
+		{
+			sections.map(([group, items]) => (
+				<div>
+					{group && <p class="mb-1 text-xs text-muted-foreground">{group}</p>}
+					<ul class="space-y-1">
+						{items.map(({ href, title }) => (
+							<li>
+								<a href={href} class:list={['nav-link', { 'nav-link--active': pathname === href.replace(/\/$/, '') }]}>
+									{title}
+								</a>
+							</li>
+						))}
+					</ul>
+				</div>
+			))
+		}
+	</nav>
+</aside>
+
+<footer class="order-last py-8 text-xs text-muted-foreground md:order-none md:col-start-1 md:row-start-2 md:self-end">
+	<p><a href={authorUrl}>{author}</a> &copy; {years}</p>
+	<p class="mt-1">powered by <a href="https://github.com/rhysd/vim.wasm">vim.wasm</a></p>
+</footer>

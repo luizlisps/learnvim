@@ -1,0 +1,31 @@
+---
+import '@/styles/global.css';
+import Sidebar from '@/components/Sidebar.astro';
+
+interface Props {
+	title?: string | undefined;
+	description?: string | undefined;
+}
+
+const siteName = 'learnvim';
+const { title, description } = Astro.props;
+const pageTitle = title && title !== siteName ? `${title} - ${siteName}` : siteName;
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{pageTitle}</title>
+		{description && <meta name="description" content={description} />}
+	</head>
+	<body class="mx-auto flex min-h-screen max-w-[960px] flex-col px-6 md:grid md:grid-cols-[13rem_1fr] md:grid-rows-[1fr_auto] md:gap-x-12">
+		<Sidebar />
+		<main class="min-w-0 flex-1 md:col-start-2 md:row-span-2 md:row-start-1">
+			<slot />
+		</main>
+	</body>
+</html>

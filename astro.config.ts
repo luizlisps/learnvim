@@ -2,6 +2,12 @@ import { defineConfig } from 'astro/config';
 import type { AstroIntegration } from 'astro';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 
+import react from '@astrojs/react';
+import tailwindcss from '@tailwindcss/vite';
+import { satteri } from '@astrojs/markdown-satteri';
+import { externalLinksPlugin } from './src/plugins/external-links.ts';
+import { glossaryPlugin } from './src/plugins/glossary.ts';
+
 // vim.wasm needs SharedArrayBuffer => cross-origin isolation.
 // The production host must send these same headers.
 const isolation = {
@@ -23,10 +29,16 @@ const crossOriginIsolation: AstroIntegration = {
 };
 
 export default defineConfig({
-  integrations: [crossOriginIsolation],
+  integrations: [crossOriginIsolation, react()],
+  markdown: {
+    // Dual themes emit both palettes; global.css picks one via prefers-color-scheme.
+    shikiConfig: { themes: { light: 'solarized-light', dark: 'solarized-dark' } },
+    processor: satteri({ hastPlugins: [glossaryPlugin(), externalLinksPlugin] }),
+  },
   vite: {
     preview: { headers: isolation },
     plugins: [
+      tailwindcss(),
       // The worker (vim.js) loads vim.wasm/vim.data by relative name,
       // so all three must be served side by side, unhashed.
       viteStaticCopy({

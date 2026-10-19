@@ -1,0 +1,295 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/*
+ * Visual identity: calm, flat, old-web product page on the Solarized palette
+ * (https://ethanschoonover.com/solarized/), set in Monaco.
+ * Exactly one of Solarized light or dark, chosen by the device's color scheme;
+ * never mix them: light uses only base3/base2/base1/base00/base01, dark only
+ * base03/base02/base01/base0/base1. Solid surfaces, 1px borders, small radii,
+ * no gradients, no motion. Blue is the primary; yellow is the one accent.
+ * No webfonts: COEP (require-corp, needed by vim.wasm) blocks cross-origin fonts.
+ */
+
+@custom-variant dark (@media (prefers-color-scheme: dark));
+
+@theme {
+    --color-base03: #002b36;
+    --color-base02: #073642;
+    --color-base01: #586e75;
+    --color-base00: #657b83;
+    --color-base0: #839496;
+    --color-base1: #93a1a1;
+    --color-base2: #eee8d5;
+    --color-base3: #fdf6e3;
+    --color-yellow: #b58900;
+    --color-orange: #cb4b16;
+    --color-red: #dc322f;
+    --color-magenta: #d33682;
+    --color-violet: #6c71c4;
+    --color-blue: #268bd2;
+    --color-cyan: #2aa198;
+    --color-green: #859900;
+}
+
+@theme inline {
+    --font-sans: Monaco, Menlo, Consolas, "DejaVu Sans Mono", monospace;
+    --font-mono: Monaco, Menlo, Consolas, "DejaVu Sans Mono", monospace;
+
+    --radius-sm: calc(var(--radius) - 2px);
+    --radius-md: var(--radius);
+    --radius-lg: calc(var(--radius) + 2px);
+    --radius-xl: calc(var(--radius) + 2px);
+    --radius-2xl: calc(var(--radius) + 4px);
+    --radius-3xl: calc(var(--radius) + 6px);
+    --radius-4xl: calc(var(--radius) + 8px);
+
+    --shadow-xs: none;
+    --shadow-sm: none;
+
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-emphasis: var(--emphasis);
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-card-cap: var(--card-cap);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-primary-hover: var(--primary-hover);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-secondary-hover: var(--secondary-hover);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-destructive: var(--destructive);
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+    --color-link: var(--link);
+    --color-link-hover: var(--link-hover);
+}
+
+/* Solarized light: base3 page, base2 highlights, base00 body text, base01 emphasis. */
+:root {
+    --radius: 4px;
+
+    --background: var(--color-base3);
+    --foreground: var(--color-base00);
+    --emphasis: var(--color-base01);
+    --card: var(--color-base3);
+    --card-foreground: var(--color-base00);
+    --card-cap: var(--color-base2);
+    --popover: var(--color-base3);
+    --popover-foreground: var(--color-base00);
+
+    --primary: var(--color-blue);
+    --primary-foreground: var(--color-base3);
+    --primary-hover: #1f74b0;
+
+    --secondary: var(--color-yellow);
+    --secondary-foreground: var(--color-base3);
+    --secondary-hover: #977200;
+
+    --muted: var(--color-base2);
+    --muted-foreground: var(--color-base1);
+    --accent: var(--color-base2);
+    --accent-foreground: var(--color-base01);
+    --destructive: var(--color-red);
+
+    --border: #e0d9c3;
+    --input: #d6cfb8;
+    --ring: var(--color-blue);
+
+    --link: var(--color-blue);
+    --link-hover: #1f74b0;
+}
+
+/* Solarized dark: base03 page, base02 highlights, base0 body text, base1 emphasis. */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background: var(--color-base03);
+        --foreground: var(--color-base0);
+        --emphasis: var(--color-base1);
+        --card: var(--color-base03);
+        --card-foreground: var(--color-base0);
+        --card-cap: var(--color-base02);
+        --popover: var(--color-base02);
+        --popover-foreground: var(--color-base0);
+
+        --primary-foreground: var(--color-base3);
+        --primary-hover: #3a9ae0;
+        --secondary-foreground: var(--color-base03);
+        --secondary-hover: #c99a12;
+
+        --muted: var(--color-base02);
+        --muted-foreground: var(--color-base01);
+        --accent: var(--color-base02);
+        --accent-foreground: var(--color-base1);
+
+        --border: #0e4452;
+        --input: #145060;
+
+        --link-hover: #3a9ae0;
+    }
+}
+
+@layer base {
+    * {
+        @apply border-border outline-ring/50;
+    }
+    html {
+        color-scheme: light dark;
+    }
+    body {
+        @apply bg-background font-sans text-sm text-foreground;
+        line-height: 1.6;
+    }
+    h1,
+    h2,
+    h3,
+    strong {
+        @apply text-emphasis;
+    }
+    a:not([data-slot]) {
+        @apply text-link underline hover:text-link-hover;
+    }
+    kbd {
+        @apply rounded-sm border border-input bg-muted px-1.5 py-px font-mono text-[90%] text-emphasis;
+    }
+}
+
+/*
+ * Shared component styles. Markdown pages render inside `.markdown`
+ * (src/layouts/MarkdownLayout.astro). Plain document rhythm, terminal touches:
+ * `*` bullets, a `- - -` divider, dotted glossary terms. No motion.
+ */
+@layer components {
+    .nav-link {
+        @apply text-foreground no-underline hover:text-emphasis hover:underline;
+    }
+    .nav-link--active {
+        @apply text-link underline underline-offset-[0.15em];
+    }
+
+    .list-asterisk,
+    .markdown ul {
+        list-style: none;
+    }
+    .list-asterisk > li,
+    .markdown ul > li {
+        position: relative;
+    }
+    .list-asterisk > li::before,
+    .markdown ul > li::before {
+        content: "*";
+        position: absolute;
+        inset-inline-start: -1.25em;
+        @apply text-muted-foreground;
+    }
+
+    .markdown {
+        @apply pt-8 pb-16;
+        overflow-wrap: anywhere;
+    }
+    .markdown > * + * {
+        @apply mt-4;
+    }
+    .markdown h1 {
+        @apply text-2xl;
+    }
+    .markdown h2 {
+        @apply mt-12 text-lg;
+    }
+    .markdown h3 {
+        @apply mt-8;
+    }
+    .markdown :is(h2, h3) {
+        scroll-margin-top: 1.5rem;
+    }
+    .markdown :is(ul, ol) {
+        @apply pl-6;
+    }
+    .markdown ol {
+        @apply list-decimal;
+    }
+    .markdown li + li {
+        @apply mt-1;
+    }
+    .markdown blockquote {
+        @apply border-l-2 border-primary bg-muted px-4 py-3;
+    }
+    /* nvim-style fill line instead of a rule. */
+    .markdown hr {
+        @apply my-12 h-[1.2em] overflow-hidden border-0 text-center leading-[1.2em] whitespace-normal text-muted-foreground;
+        word-spacing: -0.4em;
+    }
+    .markdown hr::before {
+        content: "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -";
+    }
+    .markdown :not(pre) > code {
+        @apply bg-muted px-1 py-px text-[90%] text-emphasis;
+    }
+    .markdown pre {
+        @apply overflow-x-auto border p-4 text-[90%];
+    }
+    .markdown table {
+        @apply block w-full overflow-x-auto border-collapse;
+    }
+    .markdown th,
+    .markdown td {
+        @apply border border-input px-3 py-1.5 text-left;
+    }
+    .markdown th {
+        @apply bg-muted font-normal text-emphasis;
+    }
+    .markdown img {
+        @apply max-w-full border;
+    }
+
+    /* Glossary terms (src/plugins/rehype-glossary.ts): definition shown on hover/focus. */
+    .term {
+        @apply relative cursor-help border-b border-dotted border-muted-foreground;
+    }
+    .term::after {
+        content: attr(data-tip);
+        @apply invisible absolute top-[calc(100%+0.4rem)] left-0 z-10 w-max max-w-[min(20rem,80vw)] border border-input bg-muted px-3 py-2 text-left text-xs leading-normal not-italic text-foreground;
+        pointer-events: none;
+    }
+    .term:hover::after,
+    .term:focus::after {
+        @apply visible;
+    }
+    .term:focus {
+        outline: none;
+    }
+    /* Touch screens: pinned to the bottom, toggled by tap (script in MarkdownLayout). */
+    @media (max-width: 640px) {
+        .term {
+            @apply static cursor-pointer;
+        }
+        .term::after {
+            @apply fixed inset-x-4 top-auto bottom-4 w-auto max-w-none;
+        }
+        .term:hover::after,
+        .term:focus::after {
+            @apply invisible;
+        }
+        .term.open::after {
+            @apply visible;
+        }
+    }
+}
+
+/* Shiki dual themes: inline styles carry solarized-light; swap to the dark vars on dark devices. */
+@media (prefers-color-scheme: dark) {
+    .astro-code,
+    .astro-code span {
+        color: var(--shiki-dark) !important;
+        background-color: var(--shiki-dark-bg) !important;
+    }
+}
